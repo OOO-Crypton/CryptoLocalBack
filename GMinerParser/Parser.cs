@@ -22,21 +22,21 @@ namespace GMinerParser
         public async Task<List<Monitoring>?> Parse(string data, List<Videocard> videocard)
         {
             List<Monitoring> res = new();
-            foreach ()
-            {
-                Monitoring mon = new()
-                {
-                    Date = DateTime.Now,
-                    IsActive = true,
-                    CurrentHashrate = double.Parse(fullData.Count > 5 ? fullData[5].Value : "0"),
-                    GPUTemperature = double.Parse(fullData[1].Value ?? "0"),
-                    FanRPM = double.Parse(fullData[2].Value ?? "0"),
-                    EnergyConsumption = double.Parse(fullData[3].Value ?? "0"),
-                    Videocard = videocard[index]
-                };
-                Console.WriteLine(mon.ToString());
-                res.Add(mon);
-            } 
+            //foreach ()
+            //{
+            //    Monitoring mon = new()
+            //    {
+            //        Date = DateTime.Now,
+            //        IsActive = true,
+            //        CurrentHashrate = double.Parse(fullData.Count > 5 ? fullData[5].Value : "0"),
+            //        GPUTemperature = double.Parse(fullData[1].Value ?? "0"),
+            //        FanRPM = double.Parse(fullData[2].Value ?? "0"),
+            //        EnergyConsumption = double.Parse(fullData[3].Value ?? "0"),
+            //        Videocard = videocard[index]
+            //    };
+            //    Console.WriteLine(mon.ToString());
+            //    res.Add(mon);
+            //} 
             return res;
         }
     }
