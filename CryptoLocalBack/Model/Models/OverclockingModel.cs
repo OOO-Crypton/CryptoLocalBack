@@ -2,9 +2,8 @@
 {
     public class OverclockingModel
     {
-        public double  Frequency { get; set; }
-        public double MemoryFrequency { get; set; }
-        public double CoolerSpeed { get; set; }
-        public double Consumption { get; set; }
+        public double PowerLimit { get; set; }
+        public double CoreLimit { get; set; }
+        public double MemoryLimit { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CryptoLocalBack.Domain;
 using CryptoLocalBack.Helpers;
+using CryptoLocalBack.Infrastructure;
 using CryptoLocalBack.Model.Models;
 using MSI.Afterburner;
 using MSI.Afterburner.Exceptions;
@@ -11,41 +12,25 @@ namespace CryptoLocalBack.Extensions
 {
     public class VideocardExtension
     {
-        readonly IConfiguration _configuration;
-        public VideocardExtension(IConfiguration configuration)
+        readonly CryptoLocalBackDbContext _db;
+        public VideocardExtension(CryptoLocalBackDbContext db)
         {
-            _configuration = configuration;
+            _db = db;
         }
 
-        public async Task<VideocardSettings> GetCurrentSettings()
+        public async Task ChangeSettings(OverclockingModel model)
         {
-            string? path = _configuration.GetSection("PathToGetSettings").Value;
-            if (!File.Exists(path))
+            await Helpers.Helpers.StartCommand("sudo", $"nvidia-smi -pl {model.PowerLimit}");
+            await Helpers.Helpers.StartCommand("sudo", $"nvidia-settings -c :0 -a [gpu:0]/GPUGraphicsClockOffset[2]={model.CoreLimit}");
+            await Helpers.Helpers.StartCommand("sudo", $"nvidia-settings -c :0 -a [gpu:0]/GPUMemoryTransferRateOffset[2]={model.MemoryLimit}");
+            await _db.VideocardSettings.AddAsync(new VideocardSettings()
             {
-                throw new Exception();
-            }
-            string[]? lines = (await Helpers.Helpers.StartCommand("sudo", path)).Stdout?.Split("\n");
-            if(lines == null || lines.Length == 0) 
-                throw new Exception();
-            return new VideocardSettings(lines);
-        }
-
-        public async Task<DockerAnswerView> ChangeSettings(OverclockingModel model)
-        {
-            string? path = _configuration.GetSection("PathToApplySettings").Value;
-            if (!File.Exists(path))
-            {
-                throw new Exception();
-            }
-            string newPath = path.Replace("applySettings", "genApplySettings");
-            string lines = string.Join("\n", File.ReadAllLines(path));
-            lines = lines.Replace("{gpuPowerMizerZone}", model.Consumption.ToString());
-            lines = lines.Replace("{fanControll}", "1");
-            lines = lines.Replace("{fanSpeed}", model.CoolerSpeed.ToString());
-            lines = lines.Replace("{memClock3}", model.MemoryFrequency.ToString());
-            lines = lines.Replace("{memClock2}", model.MemoryFrequency.ToString());
-            File.WriteAllText(newPath, lines);
-            return await Helpers.Helpers.StartCommand("sudo", newPath);
+                CoreLimit = model.CoreLimit,
+                CreateDate = DateTime.Now,
+                MemoryLimit = model.MemoryLimit,
+                PowerLimit = model.PowerLimit
+            });
+            await _db.SaveChangesAsync();
         }
     }
 }

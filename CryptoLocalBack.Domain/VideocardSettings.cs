@@ -8,20 +8,13 @@ using System.Threading.Tasks;
 
 namespace CryptoLocalBack.Domain
 {
+    [Table("VideocardSettings")]
     public class VideocardSettings
     {
-        public double FanSpeed { get; set; }
-        public double FrequencyCore { get; set; }
-        public double FrequencyMem { get; set; }
-        public double Power { get; set; }
-
-        public VideocardSettings(string[] lines)
-        {
-            FanSpeed = double.Parse(lines[0].Split("FanSpeed:")[1]);
-            FrequencyCore = double.Parse(lines[0].Split("FrequencyCore:")[1]);
-            FrequencyMem = double.Parse(lines[0].Split("FrequencyMem:")[1]);
-            Power = double.Parse(lines[0].Split("Power:")[1]);
-        }
-
+        [Key] public Guid Id { get; set; }  
+        public double PowerLimit { get; set; }
+        public double CoreLimit { get; set; }
+        public double MemoryLimit { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }

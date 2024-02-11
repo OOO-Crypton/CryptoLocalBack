@@ -19,7 +19,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 builder.Services.AddSingleton<IConfiguration>(configuration); ;
 builder.Services.AddSingleton(new SystemctlExtension(configuration));
-builder.Services.AddSingleton(new VideocardExtension(configuration));
 
 builder.Services.AddCors();
 var app = builder

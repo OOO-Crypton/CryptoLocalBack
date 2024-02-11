@@ -24,22 +24,22 @@ namespace CryptoLocalBack.Controllers
 
         [HttpPost("/overclocking/settings")]
         public async Task<ActionResult<DockerAnswerView>> PostOverclockingSettings(
-            [FromServices] VideocardExtension vid,
+            [FromServices] CryptoLocalBackDbContext db,
             [FromBody] OverclockingModel overclockingModel,
             CancellationToken ct)
         {
-            var res = await vid.ChangeSettings(overclockingModel);
-            if (res.ExitCode != 0) return BadRequest(res);
-            return Ok(res);
+
+            VideocardExtension vid = new(db);
+            await vid.ChangeSettings(overclockingModel);
+            return Ok();
         }
 
         [HttpGet("/overclocking/getCurrentSettings")]
         public async Task<ActionResult<VideocardSettings>> GetCurrentSettings(
-            [FromServices] VideocardExtension vid,
-            [FromBody] OverclockingModel overclockingModel,
+            [FromServices] CryptoLocalBackDbContext db,
             CancellationToken ct)
         {
-            return await vid.GetCurrentSettings();
+            return Ok(await db.VideocardSettings.ToListAsync(ct));
         }
     }
 }
